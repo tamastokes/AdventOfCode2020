@@ -31,8 +31,24 @@ check.valid.1 <- function(l){
   valid
 }
 
+check.valid.2 <- function(l){
+  # TODO: not very happy with this solution yet: l has lost all its structure
+  # (because of the fact that this function is called by 'apply'), and now it's
+  # a vector of 4 strings
+  v <- vectorize.str(l[[4]])
+  first <- strtoi(l[[1]])
+  second <- strtoi(l[[2]])
+  ifelse((v[first]==l[[3]] & v[second]!=l[[3]]) | (v[first]!=l[[3]] & v[second]==l[[3]]) , TRUE, FALSE)
+}
+
 day2.1 <- function(){
   d <- parseInput("day2_input")
   v <- apply(d, 1, check.valid.1)
+  sum(v)
+}
+
+day2.2 <- function(){
+  d <- parseInput("day2_input")
+  v <- apply(d, 1, check.valid.2)
   sum(v)
 }
