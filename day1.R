@@ -1,10 +1,6 @@
 # Not optimised for the number of computations,
 # implemented this way to practice vector operations
 # and higher-order functions
-#
-# TODO: next step could be to further generalize by replacing
-# the hard-coded single / double for-loop with a recursize solution,
-# but I think I'll stop here for now
 
 shift.left <- function(v,n){
   if(n %% length(v) == 0)
