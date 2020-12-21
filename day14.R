@@ -48,6 +48,38 @@ apply.mask <- function(val.unmasked, mask){
   masked.val
 }
 
+apply.floating <- function(bitvector, mask, counter){
+  #cat( counter, "  ", bitvector , "\n")
+  len <- length(mask)
+  if (counter > len) return(bitvector)
+  for (i in counter:len){
+    if (mask[i] == 8){
+      copy1 <- bitvector
+      copy2 <- bitvector
+      copy1[i] <- 0
+      copy2[i] <- 1
+      #cat("i: ", i, "\n")
+      return( cbind( apply.floating(copy1, mask, i+1), apply.floating(copy2, mask, i+1)))
+    }
+    multiplier <- 2^(len-i)
+  }
+  bitvector
+}
+
+apply.mask.2 <- function(val.unmasked, mask){
+  len <- length(mask)
+  val.as.bitvector <- as.bitvector(val.unmasked, len)
+  val.unmasked.as.bitvector <- val.as.bitvector
+  for (i in 1:len){
+    if (mask[i] == 1) val.as.bitvector[i] <- 1
+    multiplier <- 2^(len-i)
+  }
+  m <- apply.floating(val.as.bitvector, mask, 1)
+  masked.vals <- apply(m,2,bitvector.as.decimal)
+  #cat(val.unmasked, "\n", val.unmasked.as.bitvector, "\n", mask, "\n", masked.val, "\n", val.as.bitvector, "\n")
+  masked.vals
+}
+
 day14 <- function(filename){
   f <- read.table(filename,as.is=TRUE)
   memory <- NULL
@@ -62,4 +94,22 @@ day14 <- function(filename){
   }
   format(sum(memory),scientific = FALSE)
   
+}
+
+day14.2 <- function(filename){
+  f <- read.table(filename,as.is=TRUE)
+  memory <- list()
+  for (i in 1:length(f$V1)){
+    if (f[i,]$V1 == "mask") mask <- parse.mask(f[i,]$V3)
+    else{
+      address <- as.numeric(substr(f[i,]$V1, 5, nchar(f[i,]$V1)-1))
+      val.unmasked <- as.numeric(f[i,]$V3)
+      addresses <- apply.mask.2(address, mask)
+      print(i)
+      for (addr in addresses){
+        memory[[as.character(addr)]] <- val.unmasked
+      }
+    }
+  }
+  format(sum(sapply(memory,function(x) x)),scientific = FALSE)
 }
