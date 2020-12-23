@@ -11,6 +11,12 @@ check.validity <- function(v, rules){
   apply(valid,1,sum)
 }
 
+check.validity.2 <- function(v, rules){
+  valid <- apply(rules, 2, check.validity.for.single.rule, v)
+  apply(valid,2,prod)
+}
+
+
 day16 <- function(filename){
   con <- file(filename)
   lines <- readLines(con)
@@ -60,6 +66,25 @@ day16 <- function(filename){
       }
     }
   }
+  dimnames(nearby.tickets) <- NULL
+  dimnames(rulesm) <- NULL
   valid <- apply(nearby.tickets,2,check.validity,rulesm)
+  # part 1
   sum(nearby.tickets[valid==0])
+  # part 2
+  valid.tickets <- nearby.tickets[,apply(valid,2,function(x) min(x)>0)]
+  category.by.position <- apply(valid.tickets,1,check.validity.2,rulesm)
+  cat.pos <- list()
+
+  while(sum(category.by.position) > 0){
+    #print(category.by.position)
+    s <- apply(category.by.position,2,sum)
+    position <- which(s==1)
+    category <- which(category.by.position[,position] == 1)
+    #cat(category, position, "\n")
+    cat.pos[[names(rulesl)[category]]] <- position
+    category.by.position[category,] <- 0
+  }  
+  interesting.categories <- names(rulesl)[substr(names(rulesl),1,9) == "departure"]
+  prod(sapply( cat.pos[interesting.categories], function(x,my.numbers) { my.numbers[x] }, my.ticket))
 }
