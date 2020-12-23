@@ -12,6 +12,9 @@ day15 <- function(){
   v
 }
 
+# this is still too slow, but not algorithmically, but because of the list handling of R.
+# maybe it could be faster if I could figure out how to make R store list of integers not as vectors,
+# which would occupy too much space in this case.
 day15.faster <- function(){
   v <- c(0,3,6)
   #v <- c(0,6,1,7,2,19,20)
@@ -21,8 +24,6 @@ day15.faster <- function(){
   
   for (i in (length(v)+1):30000000)
   {
-    #cat("before: ", i, last, "\n")
-    #print(l)
     occurance <- l[[as.character(last)]]
     if (occurance[1] == 0){
       stored <- l[["0"]]
@@ -37,8 +38,6 @@ day15.faster <- function(){
       l[[as.character(diff)]] <- c(stored[2],i)
       last <- diff
     }
-    #cat("after: ", last, "\n")
-    #print(l)
     if (i %% 1000 == 0) cat(i, length(l),"\n")
   }
   last
