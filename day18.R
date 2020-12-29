@@ -40,7 +40,7 @@ eval.unprecedented <- function(v){
   acc
 }
 
-eval.opposite.precedented <- function(v){
+eval.opposite.precedented.wrong <- function(v){
   result <- list()
   result$val <- 0
   result$remaining <- NULL
@@ -108,7 +108,7 @@ day18.2.wrong <- function(filename){
       e <- substr(e,1+obr,nchar(e)-cbr)
       sss <- c(sss, rep('(',obr), e, rep(')',cbr))
     }
-    result <- eval.opposite.precedented(sss)
+    result <- eval.opposite.precedented.wrong(sss)
     print(result)
     results <- c(results, result$val)
   }
